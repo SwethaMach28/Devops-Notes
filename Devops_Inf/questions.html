@@ -1,1 +1,243 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Infosys DevOps Interview Questions & Detailed Answers</title>
+<style>
+:root{--ink:#182230;--muted:#5d6b7b;--line:#d9e1ea;--panel:#f5f8fc;--accent:#1459a6}
+*{box-sizing:border-box}body{margin:0;background:#f1f4f8;color:var(--ink);font:16px/1.62 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+main{max-width:980px;margin:auto;padding:26px 18px 56px}header,.qa{background:white;border:1px solid var(--line);border-radius:12px}
+header{padding:24px;margin-bottom:20px}h1{font-size:clamp(1.8rem,4vw,2.5rem);line-height:1.2;margin:0 0 12px}h2{margin:28px 0 12px;font-size:1.4rem}
+.qa{margin:12px 0;overflow:hidden}.qa summary{cursor:pointer;padding:15px 18px;font-weight:750}.qa summary::marker{color:var(--accent)}
+.answer{padding:0 18px 18px}.label{display:inline-block;color:var(--accent);font-size:.76rem;letter-spacing:.04em;text-transform:uppercase;font-weight:800;margin:8px 0 2px}
+.example{background:var(--panel);border-left:4px solid var(--accent);padding:12px 14px;border-radius:6px;margin:10px 0}
+.note{color:var(--muted);font-size:.93rem}.source{font-size:.9rem;border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
+a{color:var(--accent);overflow-wrap:anywhere}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#eef2f6;padding:2px 5px;border-radius:4px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#111827;color:#e8eef8;padding:12px;border-radius:8px}ol,ul{padding-left:24px}footer{margin-top:28px;color:var(--muted);font-size:.9rem}
+</style></head><body><main>
+<header>
+<h1>Infosys DevOps Interview Questions &amp; Detailed Answers</h1>
+<p>This guide uses questions reported in LinkedIn posts describing Infosys DevOps/AWS DevOps interviews. Answers and examples are written for preparation; they are not claims about what the original posters answered.</p>
+<p class="note"><strong>Source discipline:</strong> Questions are linked to their reported source posts and overlapping questions are consolidated. This is a verified starter collection, not a claim that every question from every identified post has been exhaustively captured.</p>
+</header>
 
+<h2>1. AWS and cloud infrastructure</h2>
+<details class="qa" open><summary>1. What are EC2, Lambda, and ECS? When would you use each?</summary><div class="answer">
+<p><span class="label">Answer</span></p><ul><li><strong>Amazon EC2</strong> provides virtual servers. You manage the operating system, installed software, network configuration, and scaling setup.</li><li><strong>AWS Lambda</strong> runs code in response to events without requiring you to manage servers. It fits event-driven tasks such as processing an uploaded file or responding to an API event.</li><li><strong>Amazon ECS</strong> orchestrates Docker containers. You define tasks and services, and ECS schedules and maintains containers. ECS can use EC2 capacity or AWS Fargate.</li></ul>
+<div class="example"><strong>Example:</strong> A legacy application needing OS-level customization might run on EC2. A function resizing images after an S3 upload might run on Lambda. A continuously running containerized API might run as an ECS service.</div><p><strong>Interview point:</strong> Compare workload and operational responsibility, not just definitions.</p>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/sourabhojha25_aws-devops-infosys-activity-7338998740155805698-rGTc" target="_blank">Sourabh Ojha — My AWS DevOps Interview at Infosys</a></p></div></details>
+
+<details class="qa"><summary>2. How do you create AWS infrastructure?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Use Infrastructure as Code (IaC), such as Terraform or AWS CloudFormation, to define resources in version-controlled files rather than relying only on manual console changes.</p><ol><li>Identify network, compute, storage, availability, security, and monitoring requirements.</li><li>Write reusable IaC configuration and environment-specific variables.</li><li>Run formatting, validation, and security checks.</li><li>Review the plan and use approvals for production.</li><li>Apply changes through a controlled pipeline and verify the resources.</li></ol>
+<div class="example"><strong>Example:</strong> Terraform can define a VPC, subnets, security groups, an ALB, an Auto Scaling Group, and RDS. CI runs <code>terraform fmt</code>, <code>terraform validate</code>, and <code>terraform plan</code>; a reviewer checks the plan before an approved apply.</div>
+<pre>terraform init
+terraform fmt -check
+terraform validate
+terraform plan -out=tfplan
+# After review and approval:
+terraform apply tfplan</pre>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/sourabhojha25_aws-devops-infosys-activity-7338998740155805698-rGTc" target="_blank">Sourabh Ojha — Infosys AWS DevOps interview</a></p></div></details>
+
+<details class="qa"><summary>3. How do you monitor an application?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Monitor infrastructure metrics, application metrics, logs, and user-visible symptoms. CloudWatch collects AWS metrics and logs; Prometheus commonly collects time-series metrics; Grafana provides dashboards and can display data from supported sources.</p><ol><li>Define indicators such as latency, error rate, traffic, and saturation.</li><li>Collect infrastructure and application telemetry.</li><li>Build dashboards for normal operation and incident diagnosis.</li><li>Create actionable alerts and route them to an owner.</li></ol>
+<div class="example"><strong>Example:</strong> If API 5xx errors rise, check ALB target response codes, target health, application logs, CPU/memory, and database latency. An alert should link to a dashboard and identify the service and environment.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/sourabhojha25_aws-devops-infosys-activity-7338998740155805698-rGTc" target="_blank">Sourabh Ojha — Infosys AWS DevOps interview</a></p></div></details>
+
+<details class="qa"><summary>4. How do you apply changes in AWS Cloud?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Use CI/CD with version-controlled application and infrastructure code. Changes should be reviewed, tested, and deployed through repeatable stages with an audit trail.</p><ol><li>A developer opens a pull request.</li><li>Automated tests, linting, security checks, and IaC validation run.</li><li>The pipeline creates a plan or release artifact.</li><li>Approvals protect production where required.</li><li>The pipeline deploys and verifies health; rollback steps are documented.</li></ol>
+<div class="example"><strong>Example:</strong> A Terraform change adding an S3 lifecycle policy is reviewed in Git. CI generates a plan; after approval, the deployment job applies the reviewed plan and records the result.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/sourabhojha25_aws-devops-infosys-activity-7338998740155805698-rGTc" target="_blank">Sourabh Ojha — Infosys AWS DevOps interview</a></p></div></details>
+
+<details class="qa"><summary>5. How do you access instances that have private IP addresses only?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>A private-only EC2 instance is not directly reachable from the public internet. Use an approved private path such as AWS Systems Manager Session Manager, a bastion host, or a VPN/Direct Connect connection. Prefer Session Manager when it meets requirements because it can avoid inbound SSH and bastion maintenance.</p><ol><li>Confirm the instance has the required IAM instance profile.</li><li>Check connectivity to Systems Manager endpoints or the approved private path.</li><li>Use least-privilege access and audit sessions.</li><li>Avoid exposing SSH broadly to the internet.</li></ol>
+<div class="example"><strong>Example:</strong> An engineer starts a Session Manager session through the AWS console or CLI using the organization's identity controls, without assigning a public IP to the instance.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-interviewquestions-activity-7419402081595179008--LgN" target="_blank">Abhishek Singh — Infosys DevOps interview questions</a></p></div></details>
+
+<details class="qa"><summary>6. What is VPC Peering, and when would you use it?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>VPC Peering connects two VPCs for private IP routing. The CIDR ranges must not overlap, routes must be configured on both sides, and security groups/network ACLs must allow the traffic. Peering is not transitive.</p>
+<div class="example"><strong>Example:</strong> An app in VPC-A needs a private service in VPC-B. Create and accept the peering connection, add routes in both route tables, and allow only the required service port. For many VPCs requiring centralized connectivity, consider Transit Gateway.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-interviewquestions-activity-7419402081595179008--LgN" target="_blank">Abhishek Singh — Infosys DevOps interview questions</a></p></div></details>
+
+<h2>2. Terraform and Infrastructure as Code</h2>
+<details class="qa" open><summary>7. How do you connect Terraform with AWS?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Terraform uses the AWS provider to call AWS APIs. Authenticate through an approved credential chain—preferably an IAM role or short-lived credentials rather than long-lived keys embedded in files.</p>
+<pre>terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+provider "aws" {
+  region = "us-east-1"
+}</pre>
+<p>The provider can use an execution role, environment credentials, or an approved AWS profile. Never commit credentials to Git.</p>
+<div class="example"><strong>Example:</strong> A CI job assumes a role with permission to manage only the staging resources. Terraform uses that identity to deploy the reviewed infrastructure changes.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Infosys Terraform/GitHub/Jenkins interview</a></p></div></details>
+
+<details class="qa"><summary>8. What is the difference between count and for_each in Terraform?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Both create multiple instances. <code>count</code> identifies instances by numeric index; <code>for_each</code> identifies them by a stable map key or set member.</p>
+<pre>resource "aws_s3_bucket" "logs" {
+  count  = 2
+  bucket = "example-logs-${count.index}"
+}
+
+resource "aws_s3_bucket" "team" {
+  for_each = toset(["payments", "orders"])
+  bucket   = "example-${each.key}-logs"
+}</pre>
+<p>Use <code>count</code> for a simple number of similar instances. Use <code>for_each</code> when each item has a meaningful identity. Keyed instances can avoid unwanted index shifts when one item is removed.</p>
+<div class="example"><strong>Example:</strong> For separate <code>payments</code> and <code>orders</code> buckets, <code>for_each</code> gives each resource a meaningful state address, so removing one key does not renumber the other.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Infosys Terraform/GitHub/Jenkins interview</a></p></div></details>
+
+<details class="qa"><summary>9. How do you design a CI/CD pipeline for Terraform code?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Separate verification and planning from applying. Use a remote backend, locking where supported, limited permissions, code review, and production approvals.</p><ol><li>Checkout code and select the intended environment.</li><li>Run formatting, validation, linting, and security checks.</li><li>Initialize the backend and providers.</li><li>Create a plan and publish it for review.</li><li>Require production approval when appropriate.</li><li>Apply the reviewed plan and verify results.</li></ol>
+<pre>terraform fmt -check
+terraform init
+terraform validate
+terraform plan -out=tfplan
+terraform apply tfplan</pre>
+<div class="example"><strong>Example:</strong> A pull request changes an ALB security group. The plan shows the exact ingress change. A reviewer checks that it does not expose unnecessary ports before approving deployment.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Infosys Terraform/GitHub/Jenkins interview</a></p></div></details>
+
+<details class="qa"><summary>10. How do you securely pass secrets or sensitive data to Terraform?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Do not hardcode secrets or commit them to source control. Prefer role-based authentication and retrieve application secrets from a secrets manager at runtime. Terraform's <code>sensitive = true</code> masks normal CLI output, but does not guarantee the value is absent from state or every log.</p><ul><li>Prefer IAM roles or short-lived credentials.</li><li>Store secrets in AWS Secrets Manager or an approved vault.</li><li>Encrypt and restrict remote state, which can contain sensitive values.</li><li>Limit access to pipeline logs and artifacts.</li><li>Rotate credentials and never print them in shell commands.</li></ul>
+<div class="example"><strong>Example:</strong> The pipeline assumes an IAM role to create infrastructure. The application fetches its database password from Secrets Manager at runtime rather than receiving it as plain-text Terraform input.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Infosys Terraform/GitHub/Jenkins interview</a></p></div></details>
+
+<details class="qa"><summary>11. What happens if the Terraform state file in S3 is accidentally deleted? How would you recover it?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>The real AWS resources usually continue running, but Terraform may lose the mapping between resource addresses and existing infrastructure. Do not immediately run <code>terraform apply</code>, because it may propose duplicate resources.</p><ol><li>Pause automated applies and restrict changes.</li><li>Check S3 versioning and restore the appropriate previous object version if available.</li><li>Check backups and confirm the correct backend key/workspace.</li><li>If state cannot be restored, carefully import existing resources into the correct resource addresses.</li><li>Run a plan and review every proposed change before applying.</li><li>Enable versioning, access controls, monitoring, and tested backups.</li></ol>
+<div class="example"><strong>Example:</strong> A VPC exists but its state object was deleted. Restore the S3 object version if possible. Otherwise, define the matching Terraform resource and import its actual ID, then plan and reconcile before applying.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gowthami_infosys-devops-interview-experience-the-activity-7474705767296561152-ZT-2" target="_blank">Gowthami Ravichanthiran — Infosys DevOps interview experience</a></p></div></details>
+
+<details class="qa"><summary>12. How do you manage Terraform state in a team environment?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Use a shared remote backend, restrict access, and enable state locking where supported. Separate state by environment or system boundary to prevent unrelated changes.</p><ul><li>Keep state out of Git.</li><li>Encrypt state and apply least-privilege permissions.</li><li>Use locking to prevent concurrent state-changing operations.</li><li>Use a reviewable plan/apply workflow in CI/CD.</li><li>Back up state and test recovery procedures.</li></ul>
+<div class="example"><strong>Example:</strong> Staging and production use separate backend keys and IAM permissions. If one pipeline holds the lock, a second apply waits or fails safely rather than changing the same state at the same time.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps interview Round 1</a></p></div></details>
+
+<h2>3. Git, Jenkins, and CI/CD</h2>
+<details class="qa" open><summary>13. How do you integrate GitHub with Jenkins for automated builds?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Store code and the Jenkinsfile in GitHub. Configure repository access, a Jenkins Pipeline or Multibranch Pipeline job, and a webhook or another trigger. Jenkins checks out the relevant revision and runs the stages on a push or pull request.</p><ol><li>Configure repository credentials or an approved GitHub App.</li><li>Set the repository and Jenkinsfile path in Jenkins.</li><li>Configure webhook events and branch/PR discovery.</li><li>Run tests, build an artifact, and publish results.</li></ol>
+<div class="example"><strong>Example:</strong> A pull request triggers Jenkins to run unit tests and static analysis and report status to GitHub. A merge to the protected main branch triggers the release pipeline.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-interviewquestions-activity-7419402081595179008--LgN" target="_blank">Abhishek Singh — Infosys DevOps interview questions</a></p></div></details>
+
+<details class="qa"><summary>14. What is the difference between a Git webhook and Poll SCM in Jenkins?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>A webhook is an event sent by the Git provider when a configured repository event occurs. Poll SCM makes Jenkins check the repository on a schedule to see whether changes are present.</p><ul><li><strong>Webhook:</strong> usually faster and avoids repeated polling, but requires a working event integration/connectivity path.</li><li><strong>Poll SCM:</strong> can work when inbound webhook connectivity is unavailable, but adds periodic checks and possible delay.</li></ul>
+<div class="example"><strong>Example:</strong> A push event can trigger a build quickly when GitHub can reach Jenkins through an approved integration. If Jenkins is private and no webhook route exists, scheduled polling may be used.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Infosys Terraform/GitHub/Jenkins interview</a></p></div></details>
+
+<details class="qa"><summary>15. How do you manage Jenkins credentials securely and reference them in pipelines?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Store credentials in Jenkins Credentials or an approved external secrets manager, scope access narrowly, and reference credentials by ID. Never hardcode secrets in a Jenkinsfile or print them in logs.</p>
+<pre>withCredentials([
+  string(credentialsId: 'api-token', variable: 'API_TOKEN')
+]) {
+  sh '''
+    set +x
+    ./deploy.sh
+  '''
+}</pre>
+<p>This binds a stored secret to an environment variable; the script must not print it. Use short-lived cloud credentials or role assumption when available.</p>
+<div class="example"><strong>Example:</strong> A deployment job obtains a registry credential at runtime, pushes the image, and keeps the secret out of source control and console output.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Infosys Terraform/GitHub/Jenkins interview</a></p></div></details>
+
+<details class="qa"><summary>16. How do you troubleshoot a failed Jenkins pipeline?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Identify the first failing stage and examine its logs. Determine whether the cause is source code, dependencies, credentials, permissions, agent capacity, disk space, network access, or the target service. Avoid repeated retries without diagnosing the issue.</p><ol><li>Check the failed stage, exit code, timestamps, and error.</li><li>Reproduce safely where possible.</li><li>Fix the root cause and rerun.</li><li>Verify downstream stages and add prevention such as tests, alerts, cleanup, or documentation.</li></ol>
+<div class="example"><strong>Example:</strong> A Docker image builds successfully but cannot be pushed to ECR. Verify the AWS identity, repository and region, network access, and IAM permissions. Repair the credential source or permissions rather than repeatedly retrying.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/sudipta-mohapatra-576b54186_aws-devops-infosys-activity-7490964893375070208-QDlN" target="_blank">Sudipta Mohapatra — AWS DevOps interview questions from Infosys</a></p></div></details>
+
+<h2>4. Docker and Kubernetes</h2>
+<details class="qa" open><summary>17. What is the difference between CMD and ENTRYPOINT in Docker?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p><code>ENTRYPOINT</code> defines the main executable when the container starts. <code>CMD</code> provides default arguments or a default command. A common pattern is to use ENTRYPOINT for the executable and CMD for default arguments.</p>
+<pre>FROM alpine:3.20
+ENTRYPOINT ["echo"]
+CMD ["Hello from Docker"]</pre>
+<p>With no extra arguments, the container prints <code>Hello from Docker</code>. Supplying arguments at runtime replaces the default CMD arguments while keeping ENTRYPOINT.</p>
+<div class="example"><strong>Example:</strong> A Python worker could use <code>ENTRYPOINT ["python", "worker.py"]</code> and <code>CMD ["--queue", "default"]</code>. A deployment can override the queue without changing the executable.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps interview Round 1</a></p></div></details>
+
+<details class="qa"><summary>18. How do you troubleshoot a Kubernetes pod in CrashLoopBackOff?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p><code>CrashLoopBackOff</code> means a container repeatedly exits and Kubernetes delays restart attempts. It describes the restart pattern, not the root cause.</p>
+<pre>kubectl get pods -n &lt;namespace&gt;
+kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt;
+kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt; --previous</pre>
+<ol><li>Review events and previous container logs.</li><li>Check command/arguments, environment variables, mounted configuration, and secrets.</li><li>Check probes and whether they are too aggressive.</li><li>Check resource limits and OOMKilled status.</li><li>Verify dependencies are reachable.</li><li>Fix the cause and confirm the pod remains healthy.</li></ol>
+<div class="example"><strong>Example:</strong> Logs show a required environment variable is missing. Correct the Deployment configuration, apply the change, then watch the rollout and inspect the new pod's logs.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps interview Round 1</a></p></div></details>
+
+<details class="qa"><summary>19. Explain Persistent Volumes (PV) and Persistent Volume Claims (PVC).</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>A PersistentVolume (PV) represents storage available to a cluster. A PersistentVolumeClaim (PVC) is a workload's request for storage capacity and access mode. A StorageClass can define how storage is dynamically provisioned.</p><ul><li><strong>PV:</strong> the storage resource.</li><li><strong>PVC:</strong> the application's request to use storage.</li><li><strong>StorageClass:</strong> defines provisioning behavior.</li></ul>
+<div class="example"><strong>Example:</strong> A database pod needs 20 GiB of persistent storage. Its PVC requests the capacity, Kubernetes provisions or binds a volume, and the pod mounts the claim. Replacing the pod does not itself erase the volume's data, though recovery depends on storage and reclaim policies.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps interview Round 1</a></p></div></details>
+
+<details class="qa"><summary>20. How do you handle autoscaling in Kubernetes?</summary><div class="answer">
+<p><span class="label">Answer</span></p><ul><li><strong>Horizontal Pod Autoscaler (HPA):</strong> changes pod replica count based on metrics such as CPU, memory, or custom metrics.</li><li><strong>Vertical Pod Autoscaler (VPA):</strong> recommends or adjusts CPU/memory requests depending on configuration.</li><li><strong>Cluster Autoscaler or node-provisioning tools:</strong> change node capacity when pods cannot be scheduled or nodes are underutilized.</li></ul>
+<div class="example"><strong>Example:</strong> API CPU rises during a traffic spike. HPA scales replicas from 3 to 8. If the cluster has no room for new pods, a configured cluster autoscaler can add nodes. Correct resource requests, working metrics, suitable limits, and cloud quotas are essential.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps interview Round 1</a></p></div></details>
+
+<details class="qa"><summary>21. How do you achieve URL/path-based routing in Kubernetes?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Use an Ingress resource with an Ingress controller, or an applicable Gateway API implementation. The controller directs HTTP/HTTPS requests to Services based on hostnames and paths.</p>
+<div class="example"><strong>Example:</strong> Route <code>/orders</code> to the orders service and <code>/payments</code> to the payments service. Install/configure the controller, point DNS to its entry point, configure TLS, and ensure the Services have healthy endpoints.</div>
+<p><strong>Troubleshooting:</strong> Check DNS, controller logs, Ingress rules, service ports, endpoint readiness, and application logs.</p>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps interview Round 1</a></p></div></details>
+
+<h2>5. Production troubleshooting scenarios</h2>
+<details class="qa" open><summary>22. An application behind an ALB returns HTTP 503. How would you troubleshoot it?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Check ALB and target-group health, then follow the request path to the application. A 503 can occur when the load balancer has no usable targets or when the backend returns the response, so determine where it originates.</p><ol><li>Check target health and ALB metrics such as <code>HTTPCode_ELB_5XX_Count</code> and <code>HTTPCode_Target_5XX_Count</code>.</li><li>Review target health reasons, listener rules, target port, and health-check path/protocol.</li><li>Verify security groups and network ACLs allow ALB-to-target traffic.</li><li>Check application health, logs, capacity, and dependencies.</li><li>Restore healthy capacity or roll back a harmful release, then validate client requests.</li></ol>
+<div class="example"><strong>Example:</strong> A release changes the health endpoint from <code>/health</code> to <code>/healthz</code>, but the target group still checks <code>/health</code>. Targets become unhealthy. Correct the health check or app path, verify healthy targets, and confirm requests succeed.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenario questions</a></p></div></details>
+
+<details class="qa"><summary>23. Users report slow application performance. Which AWS metrics would you check first?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Establish whether the issue affects all users, a specific endpoint, or one environment, and compare the start time with deployments. Trace the request from load balancer through compute and database.</p><ul><li><strong>ALB:</strong> target response time, request count, target 5xx, ELB 5xx, healthy target count.</li><li><strong>Compute:</strong> CPU, memory if collected, network, disk, process health, application logs.</li><li><strong>RDS:</strong> CPU, connections, free storage, latency, database load, logs.</li><li><strong>Application:</strong> latency, errors, slow requests, connection pools, dependency timing.</li></ul>
+<div class="example"><strong>Example:</strong> ALB target response time rises while CPU and target count look normal. Logs reveal repeated slow database queries. Investigate database load and query performance instead of scaling EC2 blindly.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenario questions</a></p></div></details>
+
+<details class="qa"><summary>24. How would you perform a zero-downtime deployment in AWS?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Use a strategy that keeps healthy capacity serving requests while the new version is introduced. Options include rolling, blue-green, and canary deployments. The choice depends on platform, traffic management, compatibility, and rollback needs.</p><ol><li>Build and test an immutable artifact.</li><li>Deploy to separate or limited capacity.</li><li>Run health checks and smoke tests.</li><li>Shift traffic gradually or replace instances in batches.</li><li>Monitor errors and latency.</li><li>Roll back if service indicators deteriorate.</li></ol>
+<div class="example"><strong>Example:</strong> In blue-green deployment, the current version (blue) serves traffic while the new version (green) is deployed and tested. After validation, route traffic to green. If errors rise, switch back to blue, provided database changes remain compatible.</div>
+<p><strong>Caution:</strong> A traffic switch alone does not guarantee zero downtime; database changes must usually be backward-compatible during transition.</p>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenario questions</a></p></div></details>
+
+<details class="qa"><summary>25. A Docker container keeps restarting in production. How would you identify the root cause?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Check exit status, restart count, logs, health checks, resource usage, and configuration. The same principles apply on a host, ECS, or Kubernetes, though the specific commands differ.</p><ul><li>Inspect current and previous container logs.</li><li>Check exit code, OOM events, and memory limits.</li><li>Verify entrypoint, command, environment variables, mounted files, and secrets.</li><li>Check dependencies and health-check configuration.</li><li>Compare image digest and configuration with the last known-good release.</li></ul>
+<div class="example"><strong>Example:</strong> The app exits with code 1 because a configuration file is not mounted. Logs reveal the missing file. Correct the deployment mount, redeploy, and verify that restart counts stop increasing.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenario questions</a></p></div></details>
+
+<details class="qa"><summary>26. Terraform apply fails midway after creating some resources. What would you do?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Do not assume the operation rolled back completely. Some resources may already exist. Inspect the error, state, and real infrastructure before retrying.</p><ol><li>Read the error and identify the failed resource/API call.</li><li>Check Terraform state and AWS for resources already created.</li><li>Fix the cause, such as permissions, quota, or invalid configuration.</li><li>Run a fresh plan and review remaining changes.</li><li>Apply only after confirming it will not damage existing resources.</li><li>Import unmanaged resources if necessary; do not delete resources casually.</li></ol>
+<div class="example"><strong>Example:</strong> Terraform creates a VPC and subnets but cannot launch EC2 because the account quota is reached. Resolve the quota, verify the existing resources are tracked, review a new plan, then apply.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenario questions</a></p></div></details>
+
+<details class="qa"><summary>27. A resource was manually changed in AWS, but Terraform reports drift. How do you resolve it?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Drift means real infrastructure differs from the declared configuration or recorded state. Decide whether the manual change is intended. If intended, update the code to represent it; if not, use Terraform to restore the desired configuration.</p><ol><li>Run a plan and identify differing attributes.</li><li>Confirm with the owner whether the change was intentional.</li><li>Update the configuration or plan a restoration accordingly.</li><li>Review the plan and apply through the normal approval workflow.</li><li>Investigate why the manual change bypassed controls.</li></ol>
+<div class="example"><strong>Example:</strong> Someone opens SSH to all IP addresses on a security group. If unapproved, review a plan that restores the restricted CIDR and then apply it through the approved process.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenario questions</a></p></div></details>
+
+<h2>6. Project and migration scenarios</h2>
+<details class="qa"><summary>28. How would you approach migrating a monolithic application to microservices?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Understand business capabilities, dependencies, data ownership, deployment constraints, and operational needs before splitting services. A gradual “strangler” approach moves one capability at a time while the monolith continues to operate.</p><ol><li>Map modules, APIs, data stores, and dependencies.</li><li>Choose a capability that can be separated safely.</li><li>Define API/data ownership, security, monitoring, and deployment.</li><li>Build automated tests and CI/CD for the new service.</li><li>Route controlled traffic to it and monitor behavior.</li><li>Plan data migration and rollback, then repeat.</li></ol>
+<div class="example"><strong>Example:</strong> Extract an order-notification module into a service with a clear API or event contract, retries, and monitoring. Keep order processing in the monolith until later migration steps.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gowthami_infosys-devops-interview-experience-the-activity-7474705767296561152-ZT-2" target="_blank">Gowthami Ravichanthiran — Infosys DevOps interview experience</a></p></div></details>
+
+<details class="qa"><summary>29. After deploying an application, it becomes slow. How would you troubleshoot it?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>Compare the slowdown with the deployment timeline. Check affected endpoints, latency, errors, logs, resource usage, dependencies, and deployment health. If the release causes severe impact, roll back through the approved process while preserving evidence for root-cause analysis.</p><ol><li>Confirm affected users/endpoints/environments.</li><li>Compare before/after latency and error metrics.</li><li>Check compute saturation, database queries, caches, connection pools, and external dependencies.</li><li>Inspect code/configuration changes and logs.</li><li>Roll back or disable the feature if needed.</li><li>Verify recovery and document prevention steps.</li></ol>
+<div class="example"><strong>Example:</strong> A new endpoint performs a database query for every item in a list. Traces reveal repeated queries. Roll back if impact is high, optimize the query/batching, test, and redeploy with latency monitoring.</div>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gowthami_infosys-devops-interview-experience-the-activity-7474705767296561152-ZT-2" target="_blank">Gowthami Ravichanthiran — Infosys DevOps interview experience</a></p></div></details>
+
+<details class="qa"><summary>30. What Jenkins strategy and pipeline type did you use?</summary><div class="answer">
+<p><span class="label">Answer</span></p><p>This is a project-experience question, so answer based on what you actually used. Explain whether the pipeline was declarative or scripted, how it was triggered, its stages, credential handling, artifact publishing, and production gates.</p>
+<div class="example"><strong>Example answer framework:</strong> “We used a Declarative Jenkins Pipeline stored as a Jenkinsfile in Git. A pull request triggered checkout, unit tests, and code-quality checks. After merge, the pipeline built and scanned a Docker image, pushed it to a registry, deployed to test, and ran smoke tests. Production required approval. Credentials were stored in Jenkins Credentials and failures generated notifications.”</div>
+<p><strong>Important:</strong> Adapt this to your real experience; do not claim you personally did work you did not perform.</p>
+<p class="source">Source: <a href="https://www.linkedin.com/posts/gowthami_infosys-devops-interview-experience-the-activity-7474705767296561152-ZT-2" target="_blank">Gowthami Ravichanthiran — Infosys DevOps interview experience</a></p></div></details>
+
+<h2>Source links used</h2>
+<ul>
+<li><a href="https://www.linkedin.com/posts/sourabhojha25_aws-devops-infosys-activity-7338998740155805698-rGTc" target="_blank">Sourabh Ojha — AWS DevOps interview at Infosys</a></li>
+<li><a href="https://www.linkedin.com/posts/gururajrathod_devops-terraform-jenkins-activity-7382637354089508864-6_16" target="_blank">Gururaj Rathod — Terraform, GitHub, Jenkins</a></li>
+<li><a href="https://www.linkedin.com/posts/kaajal-choundiye-3905a71a3_interviewquestions-devops-aws-activity-7488883081186140161-asO6" target="_blank">Kaajal Choundiye — Infosys DevOps Round 1</a></li>
+<li><a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-interviewquestions-activity-7419402081595179008--LgN" target="_blank">Abhishek Singh — Infosys DevOps interview questions</a></li>
+<li><a href="https://www.linkedin.com/posts/abhishek-kumar-singh-02208a153_infosys-devops-aws-activity-7467792909426339841-OKVV" target="_blank">Abhishek Singh — Infosys DevOps scenarios</a></li>
+<li><a href="https://www.linkedin.com/posts/sudipta-mohapatra-576b54186_aws-devops-infosys-activity-7490964893375070208-QDlN" target="_blank">Sudipta Mohapatra — AWS DevOps interview questions</a></li>
+<li><a href="https://www.linkedin.com/posts/gowthami_infosys-devops-interview-experience-the-activity-7474705767296561152-ZT-2" target="_blank">Gowthami Ravichanthiran — Infosys DevOps interview experience</a></li>
+</ul>
+<footer><p>Question wording is based on the linked posts; explanations and examples are original study answers. This file is not an exhaustive archive of all LinkedIn posts, and posts may be edited or become unavailable.</p></footer>
+</main></body></html>
