@@ -1,1 +1,78 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure DevOps & Cloud Tools Equivalents Cheat Sheet</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--ink:#172033;--muted:#5c687c;--line:#dce3ee;--blue:#2457c5;--navy:#152746}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:32px 20px}
+.hero,main{max-width:1120px;margin:auto}h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;margin:0 0 8px}header p{margin:0;color:#e3eaff}
+main{padding:22px 16px 40px}.tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+input{font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:10px;flex:1 1 280px;min-width:0;background:white}#count{color:var(--muted);font-size:.9rem}
+.note{background:#eaf0ff;border:1px solid #d4e0ff;color:#243b6b;padding:12px 14px;border-radius:10px;margin:0 0 18px}
+.wrap{background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 4px 18px #1720330a}table{width:100%;border-collapse:collapse}thead{background:#edf2fa}th,td{padding:12px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{font-size:.84rem;text-transform:uppercase;letter-spacing:.04em;color:#273753}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#f8faff}td:first-child{width:31%;font-weight:650}footer{padding-top:16px;color:var(--muted);font-size:.88rem}
+@media(max-width:700px){thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}table,tbody,tr,td{display:block;width:100%}tbody tr{padding:10px 12px;border-bottom:1px solid var(--line)}tbody tr:last-child{border:0}td{border:0;padding:3px 0}td:first-child{width:auto;color:var(--blue);font-size:1rem}td:nth-child(2):before{content:"Equivalent tools: ";font-weight:650;color:var(--muted)}}
+@media print{body{background:white;font-size:10pt}header{background:white;color:black;padding:0 0 12px}header p{color:#333}main{padding:0}.tools,.note{display:none}.wrap{border:0;box-shadow:none}tr{break-inside:avoid}th,td{padding:6px 8px}}
+</style>
+</head>
+<body>
+<header><div class="hero"><h1>Azure DevOps & Cloud Tools Equivalents</h1><p>Quick-reference cheat sheet for CI/CD, cloud, security, testing, monitoring, and DevOps workflows.</p></div></header>
+<main>
+<div class="tools"><input id="search" type="search" placeholder="Search a tool or equivalent (e.g., Key Vault, Jenkins, SAST)…" aria-label="Search tools"><span id="count">46 entries</span></div>
+<p class="note"><strong>Note:</strong> These are comparable tools and services, not always exact one-to-one replacements. Confirm feature coverage and platform requirements before choosing.</p>
+<div class="wrap"><table id="cheat"><thead><tr><th>Azure tool / technology</th><th>Equivalent tools</th></tr></thead><tbody><tr><td>Azure DevOps</td><td>Jenkins, GitLab CI/CD, GitHub Actions, CircleCI</td></tr>
+<tr><td>Azure Pipelines / YAML</td><td>Jenkins Pipeline / Jenkinsfile, GitLab CI/CD, GitHub Actions, Bamboo</td></tr>
+<tr><td>Azure Repos</td><td>Bitbucket, GitHub, GitLab, SVN</td></tr>
+<tr><td>Azure DevOps Environments</td><td>Jenkins deployment stages, Octopus Deploy, Harness</td></tr>
+<tr><td>Node.js / npm</td><td>Node.js, npm</td></tr>
+<tr><td>Azure App Configuration</td><td>AWS AppConfig, LaunchDarkly, Unleash</td></tr>
+<tr><td>Azure Key Vault</td><td>HashiCorp Vault, AWS Secrets Manager, CyberArk, Google Secret Manager</td></tr>
+<tr><td>Managed Identity</td><td>AWS IAM Roles, workload identity federation</td></tr>
+<tr><td>JFrog Advanced Security (SAST)</td><td>Fortify, Checkmarx, Veracode, Semgrep</td></tr>
+<tr><td>SonarQube</td><td>SonarQube, CodeQL, Checkmarx, Semgrep</td></tr>
+<tr><td>Invicti (DAST)</td><td>OWASP ZAP, Burp Suite, Acunetix</td></tr>
+<tr><td>JFrog Xray</td><td>Snyk, Mend, Black Duck</td></tr>
+<tr><td>GitHub Advanced Security for Azure DevOps</td><td>GitLab Security Scanning, Checkmarx, Veracode</td></tr>
+<tr><td>Gitleaks</td><td>GitGuardian, TruffleHog, detect-secrets</td></tr>
+<tr><td>ESLint</td><td>Biome, StandardJS</td></tr>
+<tr><td>Prettier</td><td>Biome</td></tr>
+<tr><td>Terraform</td><td>OpenTofu, Pulumi</td></tr>
+<tr><td>Bicep</td><td>Terraform, AWS CloudFormation, Pulumi</td></tr>
+<tr><td>ARM templates</td><td>AWS CloudFormation, Terraform, Pulumi</td></tr>
+<tr><td>JFrog Artifactory</td><td>Sonatype Nexus, AWS CodeArtifact, Azure Artifacts, GitHub Packages</td></tr>
+<tr><td>Docker</td><td>Podman, Buildah</td></tr>
+<tr><td>Azure Kubernetes Service (AKS)</td><td>Amazon EKS, Google GKE, Red Hat OpenShift</td></tr>
+<tr><td>Jest</td><td>Mocha, Vitest, Jasmine</td></tr>
+<tr><td>Playwright</td><td>Selenium, Cypress</td></tr>
+<tr><td>Cypress</td><td>Playwright, Selenium</td></tr>
+<tr><td>Datadog APM</td><td>Dynatrace, New Relic, AppDynamics, Elastic APM</td></tr>
+<tr><td>Datadog Log Management</td><td>Splunk, Elastic Stack, CloudWatch Logs, Grafana Loki</td></tr>
+<tr><td>Azure Monitor</td><td>Amazon CloudWatch, Prometheus, Grafana</td></tr>
+<tr><td>Application Insights</td><td>AWS X-Ray, CloudWatch, New Relic, AppDynamics</td></tr>
+<tr><td>Azure Boards</td><td>Jira, GitLab Issues, GitHub Projects, Rally</td></tr>
+<tr><td>Azure DevOps Wiki</td><td>Confluence, GitLab Wiki, GitHub Wiki</td></tr>
+<tr><td>Azure App Service</td><td>AWS App Runner, Elastic Beanstalk, ECS Fargate, Google Cloud Run</td></tr>
+<tr><td>Azure Functions</td><td>AWS Lambda, Google Cloud Functions, Cloudflare Workers</td></tr>
+<tr><td>Azure Virtual Machines</td><td>Amazon EC2, Google Compute Engine</td></tr>
+<tr><td>Azure networking</td><td>AWS VPC, Google VPC, load balancers, routing and firewall services</td></tr>
+<tr><td>Git</td><td>Git</td></tr>
+<tr><td>GitFlow</td><td>GitHub Flow, GitLab Flow, trunk-based development</td></tr>
+<tr><td>Trunk-based development</td><td>Short-lived feature branches, feature flags</td></tr>
+<tr><td>PowerShell</td><td>Bash, Python</td></tr>
+<tr><td>Bash</td><td>PowerShell, Python</td></tr>
+<tr><td>Container image scanning</td><td>Trivy, Amazon Inspector, Prisma Cloud, Aqua Security, JFrog Xray</td></tr>
+<tr><td>Release approvals / rollback</td><td>Jenkins approval stages, Spinnaker, UrbanCode Deploy, Harness, Argo CD, Octopus Deploy</td></tr>
+<tr><td>Artifact management</td><td>JFrog Artifactory, Sonatype Nexus, AWS CodeArtifact, Azure Artifacts</td></tr>
+<tr><td>Automated testing / coverage</td><td>JaCoCo, Cobertura, Jest, JUnit, Vitest, Istanbul/NYC</td></tr>
+<tr><td>CI/CD security and quality gates</td><td>SonarQube, Fortify, Checkmarx, Veracode, Snyk, GitLab Security Scanning</td></tr>
+<tr><td>Work tracking and traceability</td><td>Jira, GitLab Issues, GitHub Projects, Rally</td></tr></tbody></table></div>
+<footer>GitHub tip: save as <code>azure-devops-equivalents.html</code> in your repository. Open it in a browser, or enable GitHub Pages to publish it. Use the search box to filter entries; use your browser's Print option to save as PDF.</footer>
+</main>
+<script>
+const search=document.getElementById('search'), rows=[...document.querySelectorAll('#cheat tbody tr')], count=document.getElementById('count');
+function filterRows(){const q=search.value.trim().toLowerCase();let n=0;rows.forEach(r=>{const show=r.textContent.toLowerCase().includes(q);r.hidden=!show;if(show)n++});count.textContent=`${n} of ${rows.length} entries`}
+search.addEventListener('input',filterRows);filterRows();
+</script>
+</body></html>
